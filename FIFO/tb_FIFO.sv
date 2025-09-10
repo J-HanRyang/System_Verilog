@@ -9,6 +9,9 @@
 // Target Devices   : Basys3
 // Tool Versions    : 2020.2
 // Description      : Testbench for FIFO
+//
+// Revision         : 2025/09/10    Add event driver -> monitor
+//                                  Scoreboard using Queue
 //////////////////////////////////////////////////////////////////////////////////
 
 
@@ -32,16 +35,28 @@ endinterface //fifo_interface
 ***********************************************/
 // Transation
 class transaction;
+    // random stimulus
     rand bit            iPush;
     rand bit    [7:0]   iWrData;
     rand bit            iPop;
 
+    // scoreboard
     bit         [7:0]   oRdData;
     bit                 oFull;
     bit                 oEmpty;
 
+    constraint  iWrData_limit   {
+        iWrData inside  {[0:100]};
+    }
+
+    constraint  write_chance    {
+        iPush   dist    {0:/60, 1:/40}; // 0 <- 60%, 1 <- 40%
+        iPop    dist    {0:/40, 1:/60}; // 0 <- 40%, 1 <- 60%
+    }
+
     task display(string name_s);
-        $display("%t : [%s] : iWrData = %d, oRdData = %d", $time, name_s, iWrData, oRdData);
+        $display("%t : [%s] : iPush = %d, iPop = %d, iWrData = %d, oRdData = %d, oFull = %d, oEmpty = %d", 
+        $time, name_s, iPop, iPop, iWrData, oRdData, oFull, oEmpty);
     endtask
 endclass //transaction
 
@@ -79,17 +94,20 @@ endclass //generator
 // Driver
 class driver;
     transaction             tr;
-    virtual fifo_interface  fifo_if;
     mailbox #(transaction)  gen2drv_mbox;
+    virtual fifo_interface  fifo_if;
+    event                   mon_next_event;
 
     int i = 0;
 
     function new(
         mailbox #(transaction)  gen2drv_mbox,
-        virtual fifo_interface  fifo_if
+        virtual fifo_interface  fifo_if,
+        event                   mon_next_event
     );
-        this.fifo_if        = fifo_if;
         this.gen2drv_mbox   = gen2drv_mbox;
+        this.fifo_if        = fifo_if;
+        this.mon_next_event = mon_next_event;
     endfunction //new()
 
     task reset();
@@ -97,8 +115,9 @@ class driver;
         fifo_if.iPush   = 0;
         fifo_if.iPop    = 0;
         fifo_if.iWrData = 0;
-        #10 
+        repeat(2) @(posedge fifo_if.iClk);
         fifo_if.iRst     = 0;
+        $display("[DRV] reset done!");
     endtask
 
     task run();
@@ -109,7 +128,8 @@ class driver;
             fifo_if.iPop    = tr.iPop;
             fifo_if.iWrData = tr.iWrData;
             tr.display("Drv");
-            @(negedge fifo_if.iClk); // wait for negative iClk
+            @(posedge fifo_if.iClk); // wait for postive iClk
+            -> mon_next_event;
         end
     endtask
 
@@ -120,27 +140,29 @@ class monitor;
     transaction             tr;
     virtual fifo_interface  fifo_if;
     mailbox #(transaction)  mon2scb_mbox;
+    event                   mon_next_event;
 
     function new(
         mailbox #(transaction)  mon2scb_mbox,
-        virtual fifo_interface  fifo_if
+        virtual fifo_interface  fifo_if,
+        event                   mon_next_event
     );
         this.mon2scb_mbox   = mon2scb_mbox;
         this.fifo_if        = fifo_if;  
+        this.mon_next_event = mon_next_event;
     endfunction //new()
 
     task run();
         forever
         begin
-            // generate transaction
-            tr  = new();
-            @(posedge fifo_if.iClk);
-            // compare for register logic output with input
-            #1
+            @(mon_next_event);
+            tr          = new();
             tr.iPush    = fifo_if.iPush;
             tr.iPop     = fifo_if.iPop;
             tr.iWrData  = fifo_if.iWrData;
             tr.oRdData  = fifo_if.oRdData;
+            tr.oFull    = fifo_if.oFull;
+            tr.oEmpty   = fifo_if.oEmpty;
             tr.display("MON");
             mon2scb_mbox.put(tr);
         end
@@ -156,12 +178,13 @@ class scoreboard;
 
     int pass_count  = 0;
     int fail_count  = 0;
-    int wr_count    = 0;
-    int rd_count    = 0;
+    // int wr_count    = 0;
 
     // buffer for test
-    byte wr_ram[100];  // golden_data, expected_data
-    byte rd_ram[100];
+    // byte unsigned sram[1000];  // golden_data, expected_data
+    integer count = 0;
+    logic   [7:0]   rFifo_Queue[$:15];  // Queue $ : non_count,
+    logic   [7:0]   expected_data;
 
     function new(
         mailbox #(transaction)  mon2scb_mbox,
@@ -171,35 +194,89 @@ class scoreboard;
         this.gen_next_event = gen_next_event;
     endfunction //new()
     
+    // Scoreboard Using Queue -- Mod code
     task run();
         forever
-        begin    
-            // pass fail decision
+        begin
+            count++;
             mon2scb_mbox.get(tr);
             tr.display("SCB");
-            if          (tr.iPush)
+
+            // Write
+            if (tr.iPush)
             begin
-                wr_ram[wr_count]    = tr.iWrData;
-                wr_count++;
-            end else if (tr.iPop)
-            begin
-                rd_ram[rd_count]    = tr.oRdData;
-                rd_count++;
-                $display("-> oRdData = %d", tr.oRdData);
+                if (!tr.oFull)
+                begin
+                    rFifo_Queue.push_back(tr.iWrData);
+                    $display("[SCB] : Data Store in Queue : iWrdata = %d, Size = %d", tr.iWrData, rFifo_Queue.size());
+                end else
+                    $display("[SCB] : Queue is Full!! : %d", rFifo_Queue.size());
             end
 
-            if (rd_ram[rd_count] == wr_ram[rd_count])
+            // Read
+            if (tr.iPop)
             begin
-                $display("-> PASS | expected data = %d == oRdData = %d", tr.iWrData, tr.oRdData);
-                pass_count++;
-            end else
-            begin
-                $display("-> Fail | expected data = %d != oRdData = %d", tr.iWrData, tr.oRdData);
-                fail_count++;
+                if (!tr.oEmpty)
+                begin
+                    expected_data   = rFifo_Queue.pop_front();
+                    if (expected_data == tr.oRdData)
+                    begin
+                        $display("[SCB] : Data Matched : %d", tr.oRdData);
+                        pass_count++;
+                    end else
+                    begin
+                        $display("[SCB] : Data Mismatched : %d, %d", tr.oRdData, expected_data);
+                        fail_count++;
+                    end
+                end else
+                    $display("[SCB] : Queue is Empty!!");
             end
+
+            $display("Count = %d", count);
+            $display(" ");
             -> gen_next_event;
         end
+
+        $display("=======================");
+        $display("Queue = %p", rFifo_Queue);
+        $display("=======================");
     endtask
+
+    // Existing scoreboard
+    // task run();
+    //     forever
+    //     begin
+    //         count ++;
+    //         mon2scb_mbox.get(tr);
+    //         tr.display("SCB");
+    //         if (tr.iPush && !tr.oFull)
+    //         begin
+    //             sram[wr_count]  = tr.iWrData;
+    //             wr_count++;
+    //             $display("-> oRdData = %d", tr.oRdData);
+    //         end
+
+    //         if (tr.iPop && !tr.oEmpty)
+    //         begin
+    //             expected_data   = tr.oRdData;
+                
+    //             if (expected_data == sram[rd_count])
+    //             begin
+    //                 $display("-> PASS | expected data = %d == oRdData = %d", expected_data, sram[rd_count]);
+    //                 pass_count++;
+    //             end else
+    //             begin
+    //                 $display("-> Fail | expected data = %d != oRdData = %d", expected_data, sram[rd_count]);
+    //                 fail_count++;
+    //             end
+
+    //             rd_count++;
+    //         end
+    //         $display("Count = %d", count);
+    //         $display(" ");
+    //         -> gen_next_event;
+    //     end
+    // endtask
 
 endclass //scoreboard
 
@@ -213,6 +290,7 @@ class environment;
     mailbox #(transaction)  gen2drv_mbox;
     mailbox #(transaction)  mon2scb_mbox;
     event                   gen_next_event;
+    event                   mon_next_event;
 
     function new(
         virtual fifo_interface  fifo_if
@@ -221,8 +299,8 @@ class environment;
         mon2scb_mbox = new();
 
         gen = new(gen2drv_mbox, gen_next_event);
-        drv = new(gen2drv_mbox, fifo_if);
-        mon = new(mon2scb_mbox, fifo_if);
+        drv = new(gen2drv_mbox, fifo_if, mon_next_event);
+        mon = new(mon2scb_mbox, fifo_if, mon_next_event);
         scb = new(mon2scb_mbox, gen_next_event);
     endfunction //new()
 
@@ -231,6 +309,7 @@ class environment;
         $display("========== Test Report ==========");
         $display("=================================");
         $display("==       Total Test : %4d      ==", gen.total_count);
+        $display("==        Read Test : %4d      ==", (scb.pass_count + scb.fail_count));
         $display("==        Pass Test : %4d      ==", scb.pass_count);
         $display("==        Fail Test : %4d      ==", scb.fail_count);
         $display("=================================");
@@ -242,7 +321,7 @@ class environment;
     task run();
         drv.reset();
         fork
-            gen.run(10);
+            gen.run(1000);
             drv.run();
             mon.run();
             scb.run();
