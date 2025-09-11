@@ -56,7 +56,7 @@ class transaction;
 
     task display(string name_s);
         $display("%t : [%s] : iPush = %d, iPop = %d, iWrData = %d, oRdData = %d, oFull = %d, oEmpty = %d", 
-        $time, name_s, iPop, iPop, iWrData, oRdData, oFull, oEmpty);
+        $time, name_s, iPush, iPop, iWrData, oRdData, oFull, oEmpty);
     endtask
 endclass //transaction
 
