@@ -33,7 +33,7 @@ endinterface //fifo_interface
 /***********************************************
 // Class
 ***********************************************/
-// Transation
+// Transaction
 class transaction;
     // random stimulus
     rand bit            iPush;
