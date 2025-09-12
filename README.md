@@ -1,7 +1,8 @@
 # System_Verilog
 Testbench file written while studying system Verilog verification
 
-<img width="995" height="809" alt="image" src="https://github.com/user-attachments/assets/c095416f-c01b-472c-9502-c3b69c8925ae" />
+<img width="1119" height="933" alt="image" src="https://github.com/user-attachments/assets/9e152d0d-66a4-442e-bd4c-f5faf9183026" />
+
 
 <br><br><br>
 
