@@ -31,7 +31,7 @@ endinterface //uart_interface
 // Transaction
 class transaction;
     // random stimulus
-    rand bit    [7:0]   iSend_Data;
+    randc bit   [7:0]   iSend_Data; 
 
     // scoreboard
     bit         [7:0]   oReceive_Data;
@@ -272,7 +272,7 @@ class environment;
     endtask
 
     task run();
-        int TEST_COUNT = 10;
+        int TEST_COUNT = (2**8);    // 8bit data verification
         drv.reset();
         fork
             gen.run(TEST_COUNT);
