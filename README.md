@@ -6,7 +6,7 @@ Testbench file written while studying system Verilog verification
 
 <br><br><br>
 
-============================================================================================
+===========================================================================
 <br>
 
 ## [FIFO](https://github.com/J-HanRyang/System_Verilog/tree/main/FIFO)
@@ -16,4 +16,4 @@ Testbench file written while studying system Verilog verification
 - UART_FIFO verification with System Verilog
 <br>
   
-============================================================================================
+===========================================================================
