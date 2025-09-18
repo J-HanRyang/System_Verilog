@@ -5,7 +5,7 @@
 // 
 // Create Date	    : 2025/09/17
 // Design Name      : CPU_Dedicated
-// Module Name      : Dedicated_Processor
+// Module Name      : Counter_DP
 // Target Devices   : Basys3
 // Tool Versions    : 2020.2
 // Description      : DataPath of Counter Dedecated
