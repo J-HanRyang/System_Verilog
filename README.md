@@ -14,6 +14,10 @@ Testbench file written while studying system Verilog verification
 
 ## [UART_FIFO](https://github.com/J-HanRyang/System_Verilog/tree/main/UART_FIFO)
 - UART_FIFO verification with System Verilog
+
+## [Dedicated](https://github.com/J-HanRyang/System_Verilog/tree/main/Dedicated)
+- CPU Dedicated Practice
+
 <br>
   
 ===========================================================================
