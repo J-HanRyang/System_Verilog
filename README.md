@@ -18,6 +18,9 @@ Testbench file written while studying system Verilog verification
 ## [Dedicated](https://github.com/J-HanRyang/System_Verilog/tree/main/Dedicated)
 - CPU Dedicated Practice
 
+## [RV32I](https://github.com/J-HanRyang/System_Verilog/tree/main/RV32I)
+- RISC-V 32bit Instuction set
+
 <br>
   
 ===========================================================================
