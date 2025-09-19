@@ -1,5 +1,5 @@
 # RV32I
-- RISC-V 32bit Instruction
+- RISC-V 32bit Instruction set
 
 ## RTL
 <div align="center">
