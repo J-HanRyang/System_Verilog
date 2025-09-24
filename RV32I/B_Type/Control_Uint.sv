@@ -13,6 +13,7 @@
 // Revision 	    : 2025/09/22    Modify oALU_Control 
 //                                  Add S-Type, Funct3 output
 //                    2025/09/24    Add I-Type
+//                    2025/09/25    Add B_Type
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "Define.sv"

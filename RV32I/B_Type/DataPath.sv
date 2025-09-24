@@ -13,6 +13,7 @@
 // Revision 	    : 2025/09/22    Update ALU (ADD Define File)
 //                    2025/09/23    Add IL_Type
 //                    2025/09/24    Add I_Type
+//                    2025/09/25    Add B_Type
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "Define.sv"
@@ -62,7 +63,7 @@ module DataPath(
     Adder   U_PC_ADD(
         .iA     (wInst_RdAddr),
         .iB     (wPCMuxOut),
-        .oSum   (wPC_Nxzt)
+        .oSum   (wPC_Nxt)
     );
 
     Program_Counter U_PC(

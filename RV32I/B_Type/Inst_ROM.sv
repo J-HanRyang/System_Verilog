@@ -9,8 +9,6 @@
 // Target Devices   : Basys3
 // Tool Versions    : 2020.2
 // Description      : Instrucion ROM
-//
-// Revision 	    : 
 //////////////////////////////////////////////////////////////////////////////////
 
 module Inst_ROM(
