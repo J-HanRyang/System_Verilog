@@ -61,7 +61,7 @@ module DataPath(
     );
 
     Adder   U_PC_ADD(
-        .iA     (wInst_RdAddr),
+        .iA     (oInst_RdAddr),
         .iB     (wPCMuxOut),
         .oSum   (wPC_Nxt)
     );
@@ -70,7 +70,7 @@ module DataPath(
         .iClk       (iClk),
         .iRst       (iRst),
         .iPC_Nxt    (wPC_Nxt),
-        .oPC        (wInst_RdAddr)
+        .oPC        (oInst_RdAddr)
     );
 
     Register_File   U_Reg_File  (
@@ -114,7 +114,6 @@ module DataPath(
 
     assign  oData_Addr      = wALU_Result;
     assign  oData_WrData    = wRegfile_RdData2;
-    assign  oInst_RdAddr    = wInst_RdAddr;
     
 endmodule
 
