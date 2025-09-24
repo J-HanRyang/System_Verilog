@@ -12,6 +12,7 @@
 //
 // Revision 	    : 2025/09/22    Modify oALU_Control 
 //                                  Add S-Type, Funct3 output
+//                    2025/09/24    Add I-Type
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "Define.sv"
@@ -60,6 +61,16 @@ module Control_Uint(
             begin
                 oALU_Control    = `ADD;
                 wControl        = 4'b1110;
+            end
+
+            `OP_I_TYPE  :   // I-Type2 (I+R)
+            begin
+                if (wFunct3 == 3'b101)
+                    oALU_Control    = {wFunct7[5], wFunct3};
+                else
+                    oALU_Control    = {1'b0, wFunct3};
+
+                wControl        = 4'b0110;
             end
 
             default     : 

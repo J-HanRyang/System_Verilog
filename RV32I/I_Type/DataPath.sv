@@ -11,6 +11,8 @@
 // Description      : Datapath of RISC-V 32I
 //
 // Revision 	    : 2025/09/22    Update ALU (ADD Define File)
+//                    2025/09/23    Add IL_Type
+//                    2025/09/24    Add I_Type
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "Define.sv"
@@ -63,20 +65,6 @@ module DataPath(
         .oRdData2   (wRegfile_RdData2)
     );
 
-    Mux_2x1 U_RegWrDataMux  (
-        .iSel   (iRegWrDataSel),
-        .iX0    (wALU_Result),
-        .iX1    (iData_RdData),
-        .oY     (wRegWrDataOut)
-    );
-
-    ALU U_ALU   (
-        .iALU_Control   (iALU_Control),
-        .iA             (wRegfile_RdData1),
-        .iB             (wALUSrcMux_Out),
-        .oALU_Result    (wALU_Result)
-    );
-
     Entend  U_Extend    (
         .iInst_Code (iInst_Code),
         .oImm_Ext   (wImm_Ext)
@@ -87,6 +75,20 @@ module DataPath(
         .iX0    (wRegfile_RdData2),
         .iX1    (wImm_Ext),
         .oY     (wALUSrcMux_Out)
+    );
+
+    ALU U_ALU   (
+        .iALU_Control   (iALU_Control),
+        .iA             (wRegfile_RdData1),
+        .iB             (wALUSrcMux_Out),
+        .oALU_Result    (wALU_Result)
+    );
+
+    Mux_2x1 U_RegWrDataMux  (
+        .iSel   (iRegWrDataSel),
+        .iX0    (wALU_Result),
+        .iX1    (iData_RdData),
+        .oY     (wRegWrDataOut)
     );
 
 
@@ -222,9 +224,13 @@ module Entend (
 );
 
     // Reg & Wire
-    logic   [6:0]   wOPcode; 
+    logic   [6:0]   wOPcode;
+    logic   [2:0]   wFunct3;
+    logic   [6:0]   wFunct7;
 
     assign  wOPcode = iInst_Code[6:0];
+    assign  wFunct3 = iInst_Code[14:12];
+    assign  wFunct7 = iInst_Code[31:25];
 
     always_comb
     begin
@@ -232,6 +238,16 @@ module Entend (
             `OP_R_TYPE  : oImm_Ext  = 32'bx;
             `OP_S_TYPE  : oImm_Ext  = {{20{iInst_Code[31]}}, iInst_Code[31:25], iInst_Code[11:7]};
             `OP_IL_TYPE : oImm_Ext  = {{20{iInst_Code[31]}}, iInst_Code[31:20]};
+            `OP_I_TYPE  : oImm_Ext  = {{20{iInst_Code[31]}}, iInst_Code[31:20]};
+            /*
+            begin
+                if (wFunct3 == 3'b011)
+                    oImm_Ext  = {{20{1'b0}}, iInst_Code[31:20]};
+                else
+                    oImm_Ext  = {{20{iInst_Code[31]}}, iInst_Code[31:20]};
+            end
+            */
+            
             default     : oImm_Ext  = 32'bx;
         endcase
     end

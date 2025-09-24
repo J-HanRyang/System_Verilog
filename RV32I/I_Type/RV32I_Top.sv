@@ -24,9 +24,9 @@ module RV32I_Top(
     // Reg & Wire - Logic
     ***********************************************/
     logic   [31:0]  wRdData;
-    logic   [31:0] wData_RdData;
+    logic   [31:0]  wData_RdData;
     logic   [31:0]  wRdAddr;
-    logic   [31:0]  wData_WrEn;
+    logic           wData_WrEn;
     logic   [31:0]  wData_Addr;
     logic   [31:0]  wData_WrData;
 
