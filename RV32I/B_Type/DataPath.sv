@@ -46,7 +46,6 @@ module DataPath(
     logic   [31:0]  wALUSrcMuxOut;
     logic   [31:0]  wPCMuxOut;
     logic   [31:0]  wPC_Nxt;
-    logic   [31:0]  wInst_RdAddr;
 
     assign  wPCMuxSel   = iBranch & wBtaken;
 
