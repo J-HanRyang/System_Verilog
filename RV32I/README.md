@@ -1,10 +1,10 @@
 # RV32I
 SystemVerilog로 구현한 RV32I 명령어 세트의 단일 사이클 CPU 코어, R, S, I, B-Type의 기본 정수 명령어 동작 원리를 학습 <br>
-R -> S -> I -> B Type으로 확장하며 구체화
+R -> S -> I -> B -> U Type으로 확장하며 구체화
 
 ## Block Diagram
 <div align="conter">
-  <img width="1844" height="945" alt="image" src="https://github.com/user-attachments/assets/48f07a2a-cdae-4d2d-becb-5f6938c9f978" />
+  <img width="1844" height="933" alt="image" src="https://github.com/user-attachments/assets/ea2e5abe-3ebb-46a0-ad61-db57d9a0be8e" />
 </div>
 
 <br>
