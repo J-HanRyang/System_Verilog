@@ -1,5 +1,5 @@
 # RV32I
-SystemVerilog로 구현한 RV32I 명령어 세트의 단일 사이클 CPU 코어, R, S, I, B-Type의 기본 정수 명령어 동작 원리를 학습 <br>
+SystemVerilog로 구현한 RV32I 명령어 세트의 단일 사이클 CPU 코어, R, S, I, B, U-Type의 기본 정수 명령어 동작 원리를 학습 <br>
 R -> S -> I -> B -> U Type으로 확장하며 구체화
 
 ## Block Diagram
@@ -33,6 +33,13 @@ R -> S -> I -> B -> U Type으로 확장하며 구체화
 - **목표 :** 두 소스 레지스터(Rs1, Rs2)를 비교하여, 조건이 참인경우 PC의 값을 PC+imm으로 변경하여 프로그램의 실행 흐름을 바꿈
 - **동작 형태 :** if (Rs1 OP Rs2) ? PC : PC + imm
 - **구현된 명령어 :** beq, bne, blt, bge, bltu, bgeu
+
+<br>
+
+### [U-Type]
+- **목표 :**
+- **동작 형태 :**
+- **구현된 명령어 :**
 
 <br>
 
