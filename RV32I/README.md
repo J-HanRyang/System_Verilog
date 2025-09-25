@@ -4,7 +4,7 @@ R -> S -> I -> B -> U Type으로 확장하며 구체화
 
 ## Block Diagram
 <div align="conter">
-  <img width="1124" height="680" alt="image" src="https://github.com/user-attachments/assets/30f78f95-b4df-4bc4-a230-7dc6f9da96f3" />
+  <img width="1844" height="1115" alt="image" src="https://github.com/user-attachments/assets/64f23952-db96-4f5b-8f3e-338791ac4f23" />
 </div>
 
 <br>
