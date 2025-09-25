@@ -4,7 +4,7 @@ R -> S -> I -> B -> U Type으로 확장하며 구체화
 
 ## Block Diagram
 <div align="conter">
-  <img width="1844" height="1115" alt="image" src="https://github.com/user-attachments/assets/64f23952-db96-4f5b-8f3e-338791ac4f23" />
+  <img width="1844" height="1115" alt="image" src="https://github.com/user-attachments/assets/8ad764c6-1138-411e-87ca-89b1065e8d91" />
 </div>
 
 <br>
@@ -36,10 +36,12 @@ R -> S -> I -> B -> U Type으로 확장하며 구체화
 
 <br>
 
-### [U-Type]
-- **목표 :**
+### [U-Type](https://github.com/J-HanRyang/System_Verilog/tree/main/RV32I/U_Type) (상위 상수 연산 -> PC)
+- **목표 :** 20비트의 큰 상수(Imm)을 이용해 PC 기준의 주소를 계산하여 목적지 레지스터(Rd)에 저장
 - **동작 형태 :**
-- **구현된 명령어 :**
+  - **LUI :** Rd = Imm << 12
+  - **AUIPC :** Rd = PC + (Imm << 12)
+- **구현된 명령어 :** lui, auipc
 
 <br>
 
