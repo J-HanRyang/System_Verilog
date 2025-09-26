@@ -34,16 +34,12 @@ R -> S -> I -> B -> U -> J-Type으로 확장하며 구체화
 - **동작 형태 :** if (Rs1 OP Rs2) ? PC : PC + imm
 - **구현된 명령어 :** beq, bne, blt, bge, bltu, bgeu
 
-<br>
-
 ### [U-Type](https://github.com/J-HanRyang/System_Verilog/tree/main/RV32I/U_Type) (상위 상수 연산 -> PC)
 - **목표 :** 20비트의 큰 상수(Imm)을 이용해 PC 기준의 주소를 계산하여 목적지 레지스터(Rd)에 저장
 - **동작 형태 :**
   - **LUI :** Rd = Imm << 12
   - **AUIPC :** Rd = PC + (Imm << 12)
 - **구현된 명령어 :** lui, auipc
-
-<br>
 
 ### [J-Type](https://github.com/J-HanRyang/System_Verilog/tree/main/RV32I/J_Type) (무조건 점프)
 - **목표 :** 명령어에 포함된 주소로 프로그램의 실행 흐름을 무조건 변경하고, 점프 전의 복귀 주소를 레지스터에 저장 (주로 함수 호출 및 복귀에 사용)
