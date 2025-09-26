@@ -1,10 +1,10 @@
 # RV32I
-SystemVerilog로 구현한 RV32I 명령어 세트의 단일 사이클 CPU 코어, R, S, I, B, U-Type의 기본 정수 명령어 동작 원리를 학습 <br>
-R -> S -> I -> B -> U Type으로 확장하며 구체화
+SystemVerilog로 구현한 RV32I 명령어 세트의 단일 사이클 CPU 코어, R, S, I, B, U, J-Type의 기본 정수 명령어 동작 원리를 학습 <br>
+R -> S -> I -> B -> U -> J-Type으로 확장하며 구체화
 
 ## Block Diagram
 <div align="conter">
-  <img width="1844" height="1115" alt="image" src="https://github.com/user-attachments/assets/8ad764c6-1138-411e-87ca-89b1065e8d91" />
+  <img width="1844" height="1331" alt="image" src="https://github.com/user-attachments/assets/3c643217-a8c2-476c-a29f-73261f8a1052" />
 </div>
 
 <br>
@@ -45,8 +45,17 @@ R -> S -> I -> B -> U Type으로 확장하며 구체화
 
 <br>
 
+### [J-Type](https://github.com/J-HanRyang/System_Verilog/tree/main/RV32I/J_Type) (무조건 점프)
+- **목표 :** 명령어에 포함된 주소로 프로그램의 실행 흐름을 무조건 변경하고, 점프 전의 복귀 주소를 레지스터에 저장 (주로 함수 호출 및 복귀에 사용)
+- **동작 형태 :**
+  - **JAL :**  Rd = PC + 4, PC += Imm
+  - **JALR :** Rd = PC + 4, PC = Rs1 + Imm
+- **구현된 명령어 :** jal, jalr
+
+<br>
+
 ## Main modules
 - **Control_Unit.sv :** 제어 유닛, 명령어 해독 및 모든 제어 신호 생성
 - **DataPath.sv :** 데이터패스, PC, 레지스터 파일, ALU 등 데이터 처리 및 흐름 담당
-- **Inst_ROM.sv :** 데이터 메모리, Load/Store 명령어 처리
-- **Data_RAM.sv :** 테스트용 명령어가 저장된 프로그램 메모리
+- **Inst_ROM.sv :** 테스트용 명령어가 저장된 프로그램 메모리
+- **Data_RAM.sv :** 데이터 메모리, Load/Store 명령어 처리
