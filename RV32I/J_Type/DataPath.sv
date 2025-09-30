@@ -95,7 +95,7 @@ module DataPath(
         .oRdData2   (wRegfile_RdData2)
     );
 
-    Entend  U_Extend    (
+    Extend  U_Extend    (
         .iInst_Code (iInst_Code),
         .oImm_Ext   (wImm_Ext)
     );
@@ -279,7 +279,7 @@ module ALU (
     end
 endmodule
 
-module Entend (
+module Extend (
     input   logic   [31:0]  iInst_Code,
     
     output  logic   [31:0]  oImm_Ext
