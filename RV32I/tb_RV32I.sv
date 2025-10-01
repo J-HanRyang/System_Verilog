@@ -5,15 +5,15 @@
 // 
 // Create Date	    : 2025/09/19
 // Design Name      : 
-// Module Name      : Control_Unit
+// Module Name      : tb_RV32I
 // Target Devices   : Basys3
 // Tool Versions    : 2020.2
-// Description      :
+// Description      : testbench of RV32I
 //
 // Revision 	    : 
 //////////////////////////////////////////////////////////////////////////////////
 
-module tb_RV31I();
+module tb_RV32I();
     logic   iClk;
     logic   iRst;
 
